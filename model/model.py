@@ -1,13 +1,16 @@
 import numpy as np
-import tensorflow as tf
-import tensorflow.contrib.slim as slim
+# import tensorflow as tf
+import tf_slim as slim
 from tensorflow.python.framework import ops
 from tensorflow.python.ops import clip_ops
 
 seed = 42
 np.random.seed(seed)
+# tf.random.set_seed(seed)
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior() 
+# import tensorflow.contrib.slim as slim
 tf.set_random_seed(seed)
-
 
 def vectors(model, data, session):
     vecs = []

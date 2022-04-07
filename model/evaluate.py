@@ -41,8 +41,12 @@ def evaluate(
         for i in range(query_size):
             doc_labels = query_labels[i]
             doc_avg = 0.0
-            for label in doc_labels:
-                doc_avg += precision(label, corpus_labels[closest[i]])
+            try:
+                for label in doc_labels:
+                    doc_avg += precision(label, corpus_labels[closest[i]])
+            except:
+                #print('failed doc label',len(doc_labels))
+                pass
             doc_avg /= len(doc_labels)
             avg += doc_avg
         avg /= query_size

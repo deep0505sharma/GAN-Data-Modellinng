@@ -2,7 +2,9 @@ import os
 import argparse
 import json
 import numpy as np
-import tensorflow as tf
+# import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior() 
 import model.data as data
 import model.model as m
 import model.evaluate as e
@@ -60,12 +62,26 @@ def train(model, dataset, params):
         training_data = dataset.batches('training', params.batch_size)
 
         best_val = 0.0
-        training_labels = np.array(
-            [[y] for y, _ in dataset.rows('training', num_epochs=1)]
-        )
-        validation_labels = np.array(
-            [[y] for y, _ in dataset.rows('validation', num_epochs=1)]
-        )
+        aaa = list()
+        try:
+            for y, _ in dataset.rows('training', num_epochs=1):
+                aaa.append([y])
+        except:
+            print('training label failed',len(aaa))
+        training_labels = np.array(aaa)
+        aaa = list()
+        try:
+            for y, _ in dataset.rows('validation', num_epochs=1):
+                aaa.append([y])
+        except:
+            print('validation label failed',len(aaa))
+        validation_labels = np.array(aaa)
+        # training_labels = np.array(
+        #     [[y] for y, _ in dataset.rows('training', num_epochs=1)]
+        # )
+        # validation_labels = np.array(
+        #     [[y] for y, _ in dataset.rows('validation', num_epochs=1)]
+        # )
 
         for step in range(params.num_steps + 1):
             _, x = next(training_data)

@@ -3,11 +3,11 @@ import argparse
 import json
 from collections import namedtuple
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import model.data as data
 import model.model as m
 import model.evaluate as e
-
+tf.disable_v2_behavior()
 
 def evaluate(model, dataset, params):
     with tf.Session(config=tf.ConfigProto(
@@ -24,19 +24,40 @@ def evaluate(model, dataset, params):
 
         print('computing vectors...')
 
-        validation_labels = np.array(
-            [[y] for y, _ in dataset.rows('validation', num_epochs=1)]
-        )
-        training_labels = np.array(
-            [[y] for y, _ in dataset.rows('training', num_epochs=1)]
-        )
+        aaa = list()
+        try:
+            for y, _ in dataset.rows('training', num_epochs=1):
+                aaa.append([y])
+        except:
+            print('training label incomplete',len(aaa))
+        training_labels = np.array(aaa)
+        aaa = list()
+        try:
+            for y, _ in dataset.rows('validation', num_epochs=1):
+                aaa.append([y])
+        except:
+            print('validation label incomplete',len(aaa))
+        validation_labels = np.array(aaa)
+        # validation_labels = np.array(
+        #     [[y] for y, _ in dataset.rows('validation', num_epochs=1)]
+        # )
+        # training_labels = np.array(
+        #     [[y] for y, _ in dataset.rows('training', num_epochs=1)]
+        # )
         training_labels = np.concatenate(
             (training_labels, validation_labels),
             0
         )
-        test_labels = np.array(
-            [[y] for y, _ in dataset.rows('test', num_epochs=1)]
-        )
+        aaa = list()
+        try:
+            for y, _ in dataset.rows('test', num_epochs=1):
+                aaa.append([y])
+        except:
+            print('test label incomplete',len(aaa))
+        test_labels = np.array(aaa)
+        # test_labels = np.array(
+        #     [[y] for y, _ in dataset.rows('test', num_epochs=1)]
+        # )
 
         validation_vectors = m.vectors(
             model,
