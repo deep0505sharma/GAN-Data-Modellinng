@@ -3,3 +3,4 @@ numpy
 scikit-learn
 sklearn
 tensorflow
+tf_slim

@@ -5,6 +5,8 @@ import numpy as np
 import tensorflow as tf
 import nltk
 import model.data
+from nltk.stem import WordNetLemmatizer
+wl = WordNetLemmatizer()
 
 seed = 42
 np.random.seed(seed)
@@ -16,9 +18,13 @@ csv.field_size_limit(2**28)
 def tokens(text):
     return [w.lower() for w in nltk.word_tokenize(text)]
 
+def lemmatize(text):
+    return [wl.lemmatize(word) for word in text]
+
 
 def preprocess(text, vocab_to_id):
-    ids = [vocab_to_id.get(x) for x in tokens(text) if vocab_to_id.get(x)]
+    tokenized_text = [text for x in tokens(text)]
+    ids = [vocab_to_id.get(x) for x in lemmatize(tokenized_text) if vocab_to_id.get(x)]
     if ids:
         vector = np.bincount(np.unique(ids), minlength=len(vocab_to_id))
     else:
