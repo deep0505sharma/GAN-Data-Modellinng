@@ -14,9 +14,25 @@ tf.random.set_seed(seed)
 
 csv.field_size_limit(2**28)
 
-
 def tokens(text):
     return [w.lower() for w in nltk.word_tokenize(text)]
+
+#Stop words present in the library
+stopwords = nltk.corpus.stopwords.words('english')
+stopwords[0:10]
+['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're"]
+
+#defining the function to remove stopwords from tokenized text
+
+
+def remove_stopwords(text):
+    output= [i for i in text if i not in stopwords]
+    return output
+
+#applying the function
+data['no_stopwords']= data['msg_tokenied'].apply(lambda x:remove_stopwords(x))
+
+
 
 def lemmatize(text):
     return [wl.lemmatize(word) for word in text]
